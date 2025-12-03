@@ -1,42 +1,29 @@
-
 name: Copilot Usage Report
 on:
   workflow_dispatch:
-
 jobs:
   run:
-    name: Copilot Usage Reports
     runs-on: ubuntu-latest
-
     steps:
-      # 1. Generar reporte de uso de Copilot
-      - name: Copilot Usage
-        uses: austenstone/copilot-usage@v5.2
+      - uses: austenstone/copilot-usage@v5.2
         with:
-          github-token: ${{ secrets.COPILOT }} # PAT autorizado con SAML
-          organization: 'Solorios'             # Slug exacto de la organización
-          csv: true                            # Genera CSV además del summary
+          github-token: ${{ secrets.COPILOT }}
+          organization: 'Solorios'
+          csv: true
 
-      # 2. Crear resumen en Markdown (sin PDF aquí)
-      - name: Job Summary
-        uses: austenstone/job-summary@v2.0
+      - uses: austenstone/job-summary@v2.0
         with:
           name: copilot-usage-report
-          pdf: false # Desactiva Puppeteer para evitar error de sandbox
+          pdf: false  # Evita Puppeteer
 
-      # 3. Instalar herramientas para convertir Markdown a PDF
-      - name: Instalar Pandoc y LaTeX
+      - name: Instalar Pandoc
         run: |
           sudo apt-get update
           sudo apt-get install -y pandoc texlive-xetex
 
-      # 4. Convertir el Markdown generado a PDF
       - name: Convertir Markdown a PDF
-        run: |
-          pandoc copilot-usage-report.md -o copilot-usage-report.pdf
+        run: pandoc copilot-usage-report.md -o copilot-usage-report.pdf
 
-      # 5. Subir el PDF como artifact
-      - name: Subir PDF como artifact
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
         with:
           name: copilot-usage-report
