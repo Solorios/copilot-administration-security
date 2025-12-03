@@ -1,3 +1,4 @@
+
 name: Copilot Usage Report
 on:
   workflow_dispatch:
@@ -7,23 +8,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1) Generar el reporte de uso de Copilot
+      # Genera el reporte de uso de Copilot
       - name: Copilot Usage
         uses: austenstone/copilot-usage@v5.2
         with:
           github-token: ${{ secrets.COPILOT }}
           organization: 'Solorios'
           csv: true
-
-      # 2) Verificar archivos generados      # 2) Verificar archivos generados
-      - name: Listar archivos
-        run: |
-          ls -la
-          echo "Contenido del Markdown:"
-          head -n 20 copilot-usage-report.md || echo "Archivo no encontrado"
-
-      # 3) Subir el Markdown como artifact
-      - name: Subir Markdown como artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: copilot-usage-report
