@@ -13,12 +13,15 @@ jobs:
         uses: austenstone/copilot-usage@v5.2
         with:
           github-token: ${{ secrets.COPILOT }}   # PAT autorizado con SAML
-          organization: 'Solorios'               # Slug exacto de la organización
-          csv: true                              # Genera CSV además del summary
+          organization: 'Solorios'
+          csv: true
 
-      # 2) Crear el resumen en Markdown y subirlo como artifact
-      - name: Job Summary (Markdown)
+      # 2) Crear solo el Markdown y subirlo como artifact
+      - name: Job Summary (solo Markdown)
         uses: austenstone/job-summary@v2.0
         with:
           name: copilot-usage-report
-          create-md: 'true'                      # Genera archivo .md
+          create-md: 'true'              # Genera archivo .md
+          create-md-artifact: 'true'     # Sube el .md como artifact
+          create-pdf: 'false'            # 🔴 Desactiva PDF
+          create-html: 'false'           # 🔴 Desactiva
