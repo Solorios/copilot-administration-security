@@ -8,45 +8,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1) Genera el uso de Copilot (CSV + summary)
+      # 1) Generar el reporte de uso de Copilot
       - name: Copilot Usage
         uses: austenstone/copilot-usage@v5.2
         with:
-          github-token: ${{ secrets.COPILOT }}   # PAT AUTORIZADO POR SAML
+          github-token: ${{ secrets.COPILOT }}   # PAT autorizado con SAML
           organization: 'Solorios'               # Slug exacto de la organización
-          csv: true
+          csv: true                              # Genera CSV además del summary
 
-      # 2) Crea únicamente el Markdown del resumen, SIN PDF interno
-      - name: Job Summary (MD only)
+      # 2) Crear el resumen en Markdown y subirlo como artifact
+      - name: Job Summary (Markdown)
         uses: austenstone/job-summary@v2.0
         with:
-          name: copilot-usage-report            # generará copilot-usage-report.md
-          create-pdf: 'false'                   # 🔴 Desactiva Puppeteer
-          create-html: 'false'                  # evita HTML si no lo necesitas
-          create-md: 'true'                     # produce MD
-          create-md-artifact: 'true'            # sube el MD como artifact
-
-      # (Opcional, útil para validar que el MD se generó en el workspace)
-      - name: Listar archivos generados
-        run: |
-          ls -la
-          echo "Contenido de copilot-usage-report.md (primeras 50 líneas):"
-          head -n 50 copilot-usage-report.md || true
-
-      # 3) Instala Pandoc para convertir Markdown a PDF (no usa Chrome)
-      - name: Instalar Pandoc
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y pandoc texlive-xetex
-
-      # 4) Convierte el Markdown a PDF
-      - name: Convertir Markdown a PDF
-        run: |
-          pandoc copilot-usage-report.md -o copilot-usage-report.pdf
-
-      # 5) Sube el PDF como artifact
-      - name: Subir PDF como artifact
-        uses: actions/upload-artifact@v4
-        with:
-                   name: copilot-usage-report
-
+          name: copilot-usage-report
+          create-md: 'true'                      # Genera archivo .md
