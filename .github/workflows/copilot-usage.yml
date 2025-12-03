@@ -12,16 +12,19 @@ jobs:
       - name: Copilot Usage
         uses: austenstone/copilot-usage@v5.2
         with:
-          github-token: ${{ secrets.COPILOT }}   # PAT autorizado con SAML
+          github-token: ${{ secrets.COPILOT }}
           organization: 'Solorios'
           csv: true
 
-      # 2) Crear solo el Markdown y subirlo como artifact
-      - name: Job Summary (solo Markdown)
-        uses: austenstone/job-summary@v2.0
+      # 2) Subir el archivo Markdown generado por copilot-usage
+      # Este Action crea copilot-usage-report.md en el workspace
+      - name: Verificar archivos generados
+        run: |
+          ls -la
+          echo "Contenido del Markdown:"
+          head -n 50 copilot          head -n 50 copilot-usage-report.md || echo "Archivo no encontrado"
+
+      - name: Subir Markdown como artifact
+        uses: actions/upload-artifact@v4
         with:
           name: copilot-usage-report
-          create-md: 'true'              # Genera archivo .md
-          create-md-artifact: 'true'     # Sube el .md como artifact
-          create-pdf: 'false'            # 🔴 Desactiva PDF
-          create-html: 'false'           # 🔴 Desactiva
