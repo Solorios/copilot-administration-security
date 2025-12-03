@@ -6,9 +6,10 @@ jobs:
     name: Copilot Usage Reports
     runs-on: ubuntu-latest
     steps:
-      - uses: austenstone/copilot-usage@v1.2
+      - uses: austenstone/copilot-usage@v5.2
         with:
           github-token: ${{ secrets.COPILOT }}
+          organization: 'Solorios'
           csv: true
       - uses: austenstone/job-summary@v2.0
         id: copilot-job-summary
